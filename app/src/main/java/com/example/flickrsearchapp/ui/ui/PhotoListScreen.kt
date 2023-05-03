@@ -1,5 +1,6 @@
 package com.example.flickrsearchapp.ui.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
@@ -22,6 +23,7 @@ import com.example.flickrsearchapp.model.Photo
 import com.example.flickrsearchapp.ui.PhotoUIState
 import com.example.flickrsearchapp.ui.PhotosViewModel
 
+@SuppressLint("UnusedMaterialScaffoldPaddingParameter")
 @OptIn(ExperimentalUnitApi::class)
 @Composable
 fun PhotoListScreen(
@@ -40,18 +42,17 @@ fun PhotoListScreen(
                         fontSize = TextUnit(18f, TextUnitType.Sp))
                 })
         },
-        content = {
-
+        content = { _ ->
             Column(modifier = Modifier.fillMaxWidth()) {
-                showSearchView(onQueryTextListener = { viewModel.getPhotos(it) })
+                ShowSearchView(onQueryTextListener = { viewModel.searchPhotos(it) })
                 Spacer(modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp))
                 when (val currentState = state) {
-                    is PhotoUIState.Loaded -> showLoadedList(currentState.uiModel.listOfPhotos,
+                    is PhotoUIState.Loaded -> ShowLoadedList(currentState.uiModel.listOfPhotos,
                         navigationToDetail)
-                    PhotoUIState.Loading -> showLoading()
-                    is PhotoUIState.Error -> showError(msg = currentState.msg ?: "")
+                    PhotoUIState.Loading -> ShowLoading()
+                    is PhotoUIState.Error -> ShowError(msg = currentState.msg ?: "")
                 }
             }
         }
@@ -59,7 +60,7 @@ fun PhotoListScreen(
 }
 
 @Composable
-fun showSearchView(onQueryTextListener: (text: String) -> Unit) {
+fun ShowSearchView(onQueryTextListener: (text: String) -> Unit) {
     Row {
         var text by rememberSaveable { mutableStateOf("") }
         OutlinedTextField(
@@ -81,7 +82,7 @@ fun showSearchView(onQueryTextListener: (text: String) -> Unit) {
 }
 
 @Composable
-fun showLoading() {
+fun ShowLoading() {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -93,14 +94,14 @@ fun showLoading() {
 }
 
 @Composable
-fun showError(msg: String) {
+fun ShowError(msg: String) {
     Snackbar()
     { Text(text = msg) }
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun showLoadedList(
+private fun ShowLoadedList(
     list: List<Photo>,
     navigationToDetail: (photo: Photo) -> Unit,
 ) {

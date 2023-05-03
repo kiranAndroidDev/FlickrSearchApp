@@ -2,9 +2,9 @@ package com.example.flickrsearchapp.utils
 
 import com.example.flickrsearchapp.model.Photo
 
-fun getUrl(photo: Photo): String {
-    val url = "https://farm${photo.farm}.static.flickr.com/${photo.server}/" +
-            "${photo.id}_${photo.secret}.jpg"
+fun Photo.getThumbnail(): String {
+    val url = "https://farm${this.farm}.static.flickr.com/${this.server}/" +
+            "${this.id}_${this.secret}.jpg"
     url.filterNot { it.isWhitespace() }
     return url
 }

@@ -1,18 +1,13 @@
 package com.example.flickrsearchapp.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.flickrsearchapp.repo.PhotoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.debounce
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.flatMapLatest
-import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -25,17 +20,30 @@ class PhotosViewModel @Inject constructor(
 
     fun getState() = _state
 
-    @OptIn(FlowPreview::class)
-    fun getPhotos(searchQuery: String) {
+    private val searchQueryFlow: MutableSharedFlow<String> = MutableSharedFlow()
+
+    init {
+        getPhotosResult()
+    }
+
+    fun searchPhotos(searchQuery: String) {
         viewModelScope.launch {
-            flowOf(searchQuery)
+            searchQueryFlow.emit(searchQuery)
+        }
+    }
+
+    @OptIn(FlowPreview::class)
+    private fun getPhotosResult() {
+        viewModelScope.launch {
+            searchQueryFlow
                 .debounce(500)
                 .filter {
+                    Log.e("data", it)
                     it.trim().isNotEmpty()
                 }
                 .distinctUntilChanged()
                 .flatMapLatest {
-                    repository.getSearchResultPhotoListStream(searchQuery)
+                    repository.getSearchResultPhotoListStream(it)
                 }
                 .catch { error ->
                     _state.emit(PhotoUIState.Error(error.localizedMessage))

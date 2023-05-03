@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import com.example.flickrsearchapp.ui.photo_preview.PhotoPreviewActivity
 import com.example.flickrsearchapp.ui.ui.PhotoListScreen
 import com.example.flickrsearchapp.ui.ui.theme.FlickrSearchAppTheme
-import com.example.flickrsearchapp.utils.getUrl
+import com.example.flickrsearchapp.utils.getThumbnail
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -23,7 +23,7 @@ class PhotosActivity : ComponentActivity() {
                     color = MaterialTheme.colors.background) {
                     PhotoListScreen(navigationToDetail = {
                         startActivity(PhotoPreviewActivity.getIntentForPhotoPreviewActivity(this,
-                            getUrl(it)))
+                            it.getThumbnail()))
                     })
                 }
             }

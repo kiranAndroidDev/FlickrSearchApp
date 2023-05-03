@@ -28,7 +28,7 @@ class PhotosViewModelTest {
         runTest {
             Mockito.`when`(repository.getSearchResultPhotoListStream(any()))
                 .thenReturn(flowOf(emptyList()))
-            viewModel.getPhotos("test")
+            viewModel.searchPhotos("test")
             assertEquals(PhotoUIState.Loading,viewModel.getState().value)
             advanceUntilIdle()
             assertEquals(PhotoUIState.Loaded(PhotoUiModel(emptyList())),viewModel.getState().value)
@@ -40,7 +40,7 @@ class PhotosViewModelTest {
         runTest {
             Mockito.`when`(repository.getSearchResultPhotoListStream(any()))
                 .thenThrow(IllegalArgumentException(""))
-            viewModel.getPhotos("test")
+            viewModel.searchPhotos("test")
             assertEquals(PhotoUIState.Loading,viewModel.getState().value)
             advanceUntilIdle()
             assertEquals(PhotoUIState.Error(""),viewModel.getState().value)

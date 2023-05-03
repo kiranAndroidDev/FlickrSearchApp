@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -18,8 +19,8 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.example.flickrsearchapp.model.Photo
-import com.example.flickrsearchapp.utils.getUrl
 import com.example.flickrsearchapp.R
+import com.example.flickrsearchapp.utils.getThumbnail
 
 @OptIn(ExperimentalUnitApi::class)
 @Composable
@@ -40,7 +41,7 @@ fun PhotoItem(
             modifier = Modifier
                 .fillMaxWidth(),
         ) {
-            drawProfileImage(getUrl(photo))
+            DrawProfileImage(photo.getThumbnail())
             Spacer(Modifier.padding(8.dp, 0.dp))
             Column(
                 horizontalAlignment = Alignment.Start,
@@ -49,7 +50,7 @@ fun PhotoItem(
                 verticalArrangement = Arrangement.SpaceEvenly
             ) {
                 Text(text = photo.title ?: "",
-                    color = Color.White,
+                    color = MaterialTheme.colors.onSurface,
                     fontSize = TextUnit(18f, TextUnitType.Sp))
             }
         }
@@ -57,7 +58,7 @@ fun PhotoItem(
 }
 
 @Composable
-fun drawProfileImage(url: String) {
+fun DrawProfileImage(url: String) {
     AsyncImage(
         model = url,
         placeholder = rememberAsyncImagePainter(model = R.drawable.ic_launcher_foreground),
